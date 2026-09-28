@@ -53,7 +53,7 @@
           const availability = availabilityDetails[tool.availability];
           const card = document.createElement("a");
           card.href = `tool.html?id=${encodeURIComponent(tool.id)}`;
-          card.className = "flex h-[386px] w-[320px] flex-col overflow-hidden rounded-card border border-border bg-surface-raised p-0 transition-colors hover:border-accent";
+          card.className = "flex h-[386px] w-[320px] flex-col overflow-hidden rounded-card border border-border bg-surface-raised p-0 font-body transition-colors hover:border-accent";
 
           const top = document.createElement("div");
           top.className = "flex min-h-0 w-full flex-1 items-center justify-center bg-surface";
@@ -75,7 +75,7 @@
           category.textContent = categoryLabels.get(tool.category) ?? tool.category;
 
           const name = document.createElement("h2");
-          name.className = "mx-md mb-xs text-lg font-semibold text-ink";
+          name.className = "mx-md mb-xs font-display text-lg font-semibold text-ink";
           name.textContent = tool.name;
 
           const availabilityTimeframe = document.createElement("p");
