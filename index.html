@@ -53,10 +53,10 @@
           const availability = availabilityDetails[tool.availability];
           const card = document.createElement("a");
           card.href = `tool.html?id=${encodeURIComponent(tool.id)}`;
-          card.className = "flex flex-col rounded-card border border-border bg-surface-raised p-lg transition-colors hover:border-accent";
+          card.className = "flex h-[386px] w-[320px] flex-col overflow-hidden rounded-card border border-border bg-surface-raised p-0 transition-colors hover:border-accent";
 
           const top = document.createElement("div");
-          top.className = "mb-md flex h-[340px] w-full items-center justify-center bg-surface";
+          top.className = "flex min-h-0 w-full flex-1 items-center justify-center bg-surface";
 
           const icon = document.createElement("img");
           icon.src = `images/${encodeURIComponent(tool.category)}.svg`;
@@ -66,16 +66,16 @@
           icon.className = "h-16 w-16 shrink-0";
 
           const badge = document.createElement("span");
-          badge.className = `mb-sm self-start rounded-full px-sm py-xs text-xs font-medium ${availability.classes}`;
+          badge.className = `mx-md mb-sm self-start rounded-full px-sm py-xs text-xs font-medium ${availability.classes}`;
           badge.textContent = availability.label;
           top.append(icon);
 
           const name = document.createElement("h2");
-          name.className = "mb-xs text-lg font-semibold text-ink";
+          name.className = "mx-md mt-md mb-xs text-lg font-semibold text-ink";
           name.textContent = tool.name;
 
           const category = document.createElement("p");
-          category.className = "text-sm text-ink-muted";
+          category.className = "mx-md mb-md text-sm text-ink-muted";
           category.textContent = categoryLabels.get(tool.category) ?? tool.category;
 
           card.append(top, name, badge, category);
