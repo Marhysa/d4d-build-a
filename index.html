@@ -10,6 +10,84 @@
   <link rel="stylesheet" href="dist/styles.css">
 </head>
 <body class="min-h-screen bg-surface font-body text-ink antialiased">
-  <!-- Screen 1: Catalog. Build this screen against SPEC.md. -->
+  <header class="border-b border-border bg-surface-raised">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-md py-md">
+      <a class="font-display text-xl text-ink" href="index.html">Sixth Ward Tool Library</a>
+      <a class="text-sm font-medium text-accent underline-offset-4 hover:underline" href="index.html" aria-current="page">Catalog</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-md py-xl">
+    <section aria-labelledby="catalog-heading">
+      <div class="mb-lg flex items-end justify-between gap-md">
+        <h1 id="catalog-heading" class="font-display text-xl">Tool catalog</h1>
+        <p id="result-count" class="text-sm text-ink-muted" role="status" aria-live="polite">Loading tools...</p>
+      </div>
+      <div id="tool-grid" class="grid grid-cols-1 gap-md lg:grid-cols-3" aria-label="Tools"></div>
+      <p id="load-error" class="mt-lg hidden text-sm text-status-repair" role="alert">The catalog could not be loaded. Please try again.</p>
+    </section>
+  </main>
+
+  <script>
+    const availabilityDetails = {
+      available: { label: "Available", classes: "bg-status-available-bg text-status-available" },
+      checked_out: { label: "Checked out", classes: "bg-status-out-bg text-status-out" },
+      repair: { label: "Under repair", classes: "bg-status-repair-bg text-status-repair" }
+    };
+
+    async function renderCatalog() {
+      const grid = document.querySelector("#tool-grid");
+      const resultCount = document.querySelector("#result-count");
+      const loadError = document.querySelector("#load-error");
+
+      try {
+        const response = await fetch("data/tools.json");
+        if (!response.ok) throw new Error("Catalog request failed");
+
+        const data = await response.json();
+        const categoryLabels = new Map(data.categories.map((category) => [category.id, category.label]));
+        const tools = data.tools.filter((tool) => tool.availability !== "retired");
+
+        resultCount.textContent = `${tools.length} ${tools.length === 1 ? "tool" : "tools"}`;
+        grid.replaceChildren(...tools.map((tool) => {
+          const availability = availabilityDetails[tool.availability];
+          const card = document.createElement("a");
+          card.href = `tool.html?id=${encodeURIComponent(tool.id)}`;
+          card.className = "flex min-h-48 flex-col rounded-card border border-border bg-surface-raised p-lg transition-colors hover:border-accent";
+
+          const top = document.createElement("div");
+          top.className = "mb-md flex items-start";
+
+          const icon = document.createElement("img");
+          icon.src = `images/${encodeURIComponent(tool.category)}.svg`;
+          icon.alt = "";
+          icon.width = 64;
+          icon.height = 64;
+          icon.className = "h-16 w-16 shrink-0";
+
+          const badge = document.createElement("span");
+          badge.className = `mb-sm self-start rounded-full px-sm py-xs text-xs font-medium ${availability.classes}`;
+          badge.textContent = availability.label;
+          top.append(icon);
+
+          const name = document.createElement("h2");
+          name.className = "mb-xs text-lg font-semibold text-ink";
+          name.textContent = tool.name;
+
+          const category = document.createElement("p");
+          category.className = "text-sm text-ink-muted";
+          category.textContent = categoryLabels.get(tool.category) ?? tool.category;
+
+          card.append(top, name, badge, category);
+          return card;
+        }));
+      } catch {
+        resultCount.textContent = "";
+        loadError.classList.remove("hidden");
+      }
+    }
+
+    renderCatalog();
+  </script>
 </body>
 </html>
