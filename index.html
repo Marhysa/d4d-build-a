@@ -21,7 +21,6 @@
     <section aria-labelledby="catalog-heading">
       <div class="mb-lg flex items-end justify-between gap-md">
         <h1 id="catalog-heading" class="font-display text-xl">Tool catalog</h1>
-        <p id="result-count" class="text-sm text-ink-muted" role="status" aria-live="polite">Loading tools...</p>
       </div>
       <form id="catalog-filters" class="mb-lg grid grid-cols-1 gap-md rounded-card border border-border bg-surface-raised p-md lg:grid-cols-3" role="search" aria-label="Filter tools">
         <label class="flex flex-col gap-xs text-sm font-medium text-ink" for="category-filter">
@@ -39,6 +38,7 @@
           <input id="name-filter" class="w-full rounded-sm border border-border bg-surface-raised px-sm py-sm font-body text-sm font-normal text-ink placeholder:text-ink-muted" type="search" placeholder="Search tools">
         </label>
       </form>
+      <p id="result-count" class="mb-md text-sm text-ink-muted" role="status" aria-live="polite">Loading tools...</p>
       <div id="empty-state" class="mb-lg hidden rounded-card border border-border bg-surface-raised p-lg text-center">
         <p class="mb-md text-base text-ink">No tools match these filters.</p>
         <button id="clear-filters" class="rounded-sm bg-accent px-md py-sm text-sm font-medium text-accent-ink transition-colors hover:bg-accent-hover" type="button">Clear filters</button>
