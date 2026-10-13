@@ -23,6 +23,26 @@
         <h1 id="catalog-heading" class="font-display text-xl">Tool catalog</h1>
         <p id="result-count" class="text-sm text-ink-muted" role="status" aria-live="polite">Loading tools...</p>
       </div>
+      <form id="catalog-filters" class="mb-lg grid grid-cols-1 gap-md rounded-card border border-border bg-surface-raised p-md lg:grid-cols-3" role="search" aria-label="Filter tools">
+        <label class="flex flex-col gap-xs text-sm font-medium text-ink" for="category-filter">
+          Category
+          <select id="category-filter" class="w-full rounded-sm border border-border bg-surface-raised px-sm py-sm font-body text-sm font-normal text-ink">
+            <option value="">All categories</option>
+          </select>
+        </label>
+        <label class="flex items-center gap-sm text-sm font-medium text-ink">
+          <input id="available-filter" class="h-4 w-4 accent-accent" type="checkbox">
+          Available only
+        </label>
+        <label class="flex flex-col gap-xs text-sm font-medium text-ink" for="name-filter">
+          Tool name
+          <input id="name-filter" class="w-full rounded-sm border border-border bg-surface-raised px-sm py-sm font-body text-sm font-normal text-ink placeholder:text-ink-muted" type="search" placeholder="Search tools">
+        </label>
+      </form>
+      <div id="empty-state" class="mb-lg hidden rounded-card border border-border bg-surface-raised p-lg text-center">
+        <p class="mb-md text-base text-ink">No tools match these filters.</p>
+        <button id="clear-filters" class="rounded-sm bg-accent px-md py-sm text-sm font-medium text-accent-ink transition-colors hover:bg-accent-hover" type="button">Clear filters</button>
+      </div>
       <div id="tool-grid" class="grid grid-cols-1 gap-md lg:grid-cols-3" aria-label="Tools"></div>
       <p id="load-error" class="mt-lg hidden text-sm text-status-repair" role="alert">The catalog could not be loaded. Please try again.</p>
     </section>
@@ -39,6 +59,12 @@
       const grid = document.querySelector("#tool-grid");
       const resultCount = document.querySelector("#result-count");
       const loadError = document.querySelector("#load-error");
+      const categoryFilter = document.querySelector("#category-filter");
+      const availableFilter = document.querySelector("#available-filter");
+      const nameFilter = document.querySelector("#name-filter");
+      const emptyState = document.querySelector("#empty-state");
+      const filters = document.querySelector("#catalog-filters");
+      const clearFilters = document.querySelector("#clear-filters");
 
       try {
         const response = await fetch("data/tools.json");
@@ -46,10 +72,26 @@
 
         const data = await response.json();
         const categoryLabels = new Map(data.categories.map((category) => [category.id, category.label]));
+        data.categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category.id;
+          option.textContent = category.label;
+          categoryFilter.append(option);
+        });
         const tools = data.tools.filter((tool) => tool.availability !== "retired");
 
-        resultCount.textContent = `${tools.length} ${tools.length === 1 ? "tool" : "tools"}`;
-        grid.replaceChildren(...tools.map((tool) => {
+        function renderTools() {
+          const query = nameFilter.value.trim().toLocaleLowerCase();
+          const filteredTools = tools.filter((tool) =>
+            (!categoryFilter.value || tool.category === categoryFilter.value) &&
+            (!availableFilter.checked || tool.availability === "available") &&
+            (!query || tool.name.toLocaleLowerCase().includes(query))
+          );
+
+          resultCount.textContent = `${filteredTools.length} ${filteredTools.length === 1 ? "tool" : "tools"}`;
+          emptyState.classList.toggle("hidden", filteredTools.length > 0);
+          grid.classList.toggle("hidden", filteredTools.length === 0);
+          grid.replaceChildren(...filteredTools.map((tool) => {
           const availability = availabilityDetails[tool.availability];
           const card = document.createElement("a");
           card.href = `tool.html?id=${encodeURIComponent(tool.id)}`;
@@ -92,7 +134,19 @@
 
           card.append(top, category, name, badge, availabilityTimeframe);
           return card;
-        }));
+          }));
+        }
+
+        filters.addEventListener("submit", (event) => event.preventDefault());
+        categoryFilter.addEventListener("change", renderTools);
+        availableFilter.addEventListener("change", renderTools);
+        nameFilter.addEventListener("input", renderTools);
+        clearFilters.addEventListener("click", () => {
+          filters.reset();
+          renderTools();
+          categoryFilter.focus();
+        });
+        renderTools();
       } catch {
         resultCount.textContent = "";
         loadError.classList.remove("hidden");
