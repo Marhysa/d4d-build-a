@@ -28,12 +28,12 @@
             <option value="">All categories</option>
           </select>
         </label>
+        <label class="flex flex-col gap-xs text-sm font-medium text-ink" for="name-filter">
+          <input id="name-filter" aria-label="Tool name" class="w-full rounded-sm border border-border bg-surface-raised px-sm py-sm font-body text-sm font-normal text-ink placeholder:text-ink-muted" type="search" placeholder="Search tools">
+        </label>
         <label class="flex items-center gap-sm text-sm font-medium text-ink">
           <input id="available-filter" class="size-md accent-accent" type="checkbox">
           Available only
-        </label>
-        <label class="flex flex-col gap-xs text-sm font-medium text-ink" for="name-filter">
-          <input id="name-filter" aria-label="Tool name" class="w-full rounded-sm border border-border bg-surface-raised px-sm py-sm font-body text-sm font-normal text-ink placeholder:text-ink-muted" type="search" placeholder="Search tools">
         </label>
       </form>
       <p id="result-count" class="mb-md text-sm text-ink-muted" role="status" aria-live="polite">Loading tools...</p>
