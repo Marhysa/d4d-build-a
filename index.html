@@ -53,7 +53,7 @@
           const availability = availabilityDetails[tool.availability];
           const card = document.createElement("a");
           card.href = `tool.html?id=${encodeURIComponent(tool.id)}`;
-          card.className = "flex h-[386px] w-[320px] flex-col overflow-hidden rounded-card border border-border bg-surface-raised p-0 font-body transition-colors hover:border-accent";
+          card.className = "flex h-[386px] w-[320px] flex-col overflow-hidden rounded-card border border-border bg-surface-raised p-0 font-body transition-colors hover:border-accent-hover";
 
           const top = document.createElement("div");
           top.className = "flex min-h-0 w-full flex-1 items-center justify-center bg-surface";
@@ -79,15 +79,15 @@
           name.textContent = tool.name;
 
           const availabilityTimeframe = document.createElement("p");
-          availabilityTimeframe.className = "mx-md mb-md text-sm text-ink-muted";
+          availabilityTimeframe.className = "mx-md mb-md text-sm text-ink";
           if (tool.availability === "checked_out" && tool.due_back) {
             const [year, month, day] = tool.due_back.split("-").map(Number);
             const dueDate = new Date(year, month - 1, day);
             availabilityTimeframe.textContent = `Due back ${dueDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
           } else if (tool.availability === "repair") {
-            availabilityTimeframe.textContent = "Currently unavailable";
+            availabilityTimeframe.textContent = "Unavailable while under repair";
           } else {
-            availabilityTimeframe.textContent = "Available now";
+            availabilityTimeframe.textContent = "Ready to borrow now";
           }
 
           card.append(top, category, name, badge, availabilityTimeframe);

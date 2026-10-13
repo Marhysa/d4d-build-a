@@ -30,6 +30,7 @@
     --color-ink: #1c1b19;
     --color-ink-muted: #57534e;
     --color-accent: #1d4f4a;
+    --color-accent-hover: #16403c;
     --color-focus: #1d4f4a;
     --color-status-available: #2f6b3f;
     --color-status-available-bg: #e9f1eb;
@@ -410,8 +411,8 @@
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
   @media (hover: hover) {
-    .hover\:border-accent:hover {
-      border-color: var(--color-accent);
+    .hover\:border-accent-hover:hover {
+      border-color: var(--color-accent-hover);
     }
     .hover\:underline:hover {
       text-decoration-line: underline;
